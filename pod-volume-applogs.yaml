@@ -18,3 +18,7 @@ spec:
     command: ["sh","-c","tall -f /logs/catalina*.log"]
     volumeMounts:
       - name: app-logs
+        mountPath: /logs
+    volumes:
+      - name: app-logs
+        emptyDir: {}
