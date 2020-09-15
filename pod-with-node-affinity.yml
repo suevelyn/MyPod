@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-node-affinity
+  namespace: demo
+spec:
+  affinity:
+    nodeAffinity:
+      # 一定要滿足以下條件才可作 pod scheduling
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: beta.kubernetes.io/arch
+            operator: In
+            values:
+            - amd64
+      # 儘量滿足以下條件即可作 pod scheduling
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1 #權重設定(1-100)
+        preference:
+          matchExpressions:
+          - key: disk-type
+            operator: In
+            values:
+            - ssd
+  containers:
+  - name: with-node-affinity
+    image: gcr.io/google_containers/pause:2.0
