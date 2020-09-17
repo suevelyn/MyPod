@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-low
+  namespace: demo
+  labels:
+    priority: low
+spec:
+  priorityClassName: low-priority
+  containers:
+  - name: nginx
+    image: nginx
+  nodeSelector:
+    kubernetes.io/hostname: tx
