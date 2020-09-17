@@ -6,20 +6,27 @@ metadata:
   labels:
     k8s-app: fluentd-logging
 spec:
+  # .spec.selector 一旦定義後就無法再變更了
+  # 必須與 .spec.template.metadata.labels 的定義相同
+  # 這裡可以使用 matchLabels 或是 matchExpressions(用來處理較為複雜的 label 組合)
   selector:
     matchLabels:
       name: fluentd-elasticsearch
+  # 此為必要欄位，與 pod template 相同
+  # 用來定義 DaemonSet 的內容應該要長什麼樣子
   template:
     metadata:
       labels:
         name: fluentd-elasticsearch
+    # 由於是 DaemonSet 的關係，因此 .spec.template.spec.restartPolicy 永遠是 "Always"
+    # 預設值為 "Always"
     spec:
       tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
       containers:
       - name: fluentd-elasticsearch
-        image: quay.io/fluentd_elasticsearch/fluentd:v2.5.2
+        image: k8s.gcr.io/fluentd-elasticsearch:1.20
         resources:
           limits:
             memory: 200Mi
