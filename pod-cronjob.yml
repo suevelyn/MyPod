@@ -1,0 +1,16 @@
+apiVersion: batch/v1beta1 
+kind: CronJob 
+metadata:   
+  name: helloworld
+  namespace: demo
+spec:   
+  schedule: "*/1 * * * *"   
+  jobTemplate:     
+    spec:       
+      template:         
+        spec:           
+          containers:           
+            - name: helloworld            
+              image: debian             
+              command: ["echo", "helloworld"]
+          restartPolicy: OnFailure
