@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-iis-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iis
+  template:
+    metadata:
+      labels:
+        app: iis
+    spec:
+      containers:
+      - name: iis-container
+        image: mcr.microsoft.com/windows/servercore/iis:windowsservercore-1903
+        ports:
+        - containerPort: 80
+---	
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-iis-service
+spec:
+  selector:
+    app: iis 
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  name: my-iis-ingress
+spec:
+  rules:
+    - host: iisdemo.com.tw
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: my-iis-service
+                port:
+                  number: 80
